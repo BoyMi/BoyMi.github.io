@@ -1,0 +1,128 @@
+[toc]
+# 目前在开发当中存在的问题 (为何使用Maven)
+
+* 一个项目就是一个工程
+    * 如果项目非常的庞大 , 就不适合继续使用 package来管理项目划分模块 , 最好是每一个模块对应一个工程, 利于分工协作
+    * 借助Maven 就可以将一个项目拆分成多个工程
+
+* 项目当中需要的jar包需要手动的导入
+    * 每个模块可能使用同一个jar包 , 多个模块使用相同的jar包 浪费资源 , 臃肿
+    * 借助Maven , 可以将jar包仅仅保存 在 **仓库** 当中, 有需要时直接引用这个文件接口 , 并不需要真的吧jar复制过来
+
+* jar包寻找费时费力
+    * 借助于Maven 可以以一种规范的方式下载jar包 , 因为所有的知名框架或第三方jar包都按照统一的规范放在的maven的中央仓库当中
+    * 统一的 **规范** , 对任何的领域都非常的重要
+
+* 一个jar包依赖其他jar包, 也需要自己手动添加 , 查找
+    * Maven 会自动将所有依赖的jar包导入进来
+
+# 2-Maven是什么
+
+1 Maven 是一款服务于java平台的自动化构建工具
+	
+	* Make -> Ant -> Maven -> Gradle
+	* 构建
+		以java源文件 , 框架的配置文件 , JSP , HTML , 图片等资源为原材料
+		去生产一个可以运行的项目的过程
+			> 编译 , 搭建 , 部署
+
+2 构建过程中的各个环节
+
+	* 清理 : 将以前编译的class文件删除 , 为下一次编译做准备
+	* 编译 : 将java文件编译成class文件
+	* 测试 : 指定测试 , 自动调用junit测试
+	* 报告 : 测试程序执行的结果
+	* 打包 : 动态Web工程打war包 , java工程打jar包
+	* 安装 : Maven特定的概念-- 将打包得到的文件复制到 **仓库当中** 的指定位置
+	* 部署 : 将动态的Web工程打包的war文件 复制到指定的服务器的指定资源目录下即可
+	这些操作在eclipse 上都是 自动化的所以我们一般感觉不到
+
+3 安装Maven核心程序
+
+	* 下载[maven](http://maven.apache.org/download.cgi)
+	* 配置maven相关的环境变量
+		1) MAVEN_HOME OR M2_HOME
+			M2_HOME 用于向下兼容 D:\devInstall\apache-maven-3.5.3 maven的根目录
+		2) path
+			path = D:\devInstall\apache-maven-3.5.3\bin
+		3) cmd 输入 mvn -v 
+			有版本信息的输出便是配置成功了
+
+4 Maven的核心概念
+Hello
+|---src
+|---|---main
+|---|---|---java
+|---|---|---resources
+|---|---test
+|---|---|---java
+|---|---|---resources
+|---pom.xml : 一个配置文件
+
+	* 约定的目录结果
+	* POM
+	* 坐标
+	* 依赖
+	* 仓库
+	* 生命周期/插件/目标
+	* 继承
+	* 聚合
+	
+POM文件内容
+```xml
+<?xml version="1.0" ?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	
+	<modelVersion>4.0.0</modelVersion>
+	
+	<groupId>com.atguigu.maven</groupId>
+	
+	<artifactId>Hello</artifactId>
+	
+	<version>0.0.1-SNAPSHOT</version>
+
+	<name>Hello</name>
+	  
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.0</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+</project>
+```
+
+6 建立第一个Maven 工程
+
+	1) 创建约定的目录结果
+		[1] 根目录: 工程名
+		[2] src: 源码
+		[3] main: 主程序, test: 测试程序
+		[4] resource目录: 存放资源文件
+		
+
+	2) 为什么要遵守约定的目录结构呢
+		[1] Maven要负责项目的**自动构建** 所以目录结构需要按照一定的规范
+		[2] 如果是我们自己定义的东西 需要让框架知道 , 
+			以xml配置 的方式
+			遵守框架内部已经存在的约定 
+				如: log4j的 log4j.properties or log4j.xml
+
+## 常用Maven命令
+	1 执行Maven与构建相关的命令 , 需要进入 pom.xml 文件的目录当中
+
+	2 常用的命令
+		[1] mvn clean : 清理
+		[2]	mvn compile: 编译主程序
+		[3] mvn test-compile : 编译测试程序
+		[4] mvn test : 执行测试程序
+		[5] mvn package : 打包
+
+	3 关于联网的问题
+		[1] Maven的核心程序仅仅定义了抽象的生命周期 , 但是具体的工作必须由特定的插件来完成, 而插件的本身并不在Maven的核心程序当中
+		[2] 当我们
+
